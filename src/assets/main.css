@@ -1,0 +1,26 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  overflow: hidden;
+  margin: 0;
+  padding: 0;
+}
+
+@media (min-width: 1024px) {
+  body {
+    margin: 0;
+    display: flex;
+  }
+
+  #app {
+    display: grid;
+    column-gap: 1px;
+    width: 100dvw;
+    height: 100vh;
+    grid-template-rows: 40dvh auto;
+    place-items: center;
+    overflow: hidden;
+  }
+}
