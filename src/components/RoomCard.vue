@@ -9,7 +9,7 @@
   import type { ClassMeeting } from '../domain/models'
   import { TimeOfDay } from '../domain/time'
 
-  const props = defineProps<ClassMeeting>()
+  defineProps<ClassMeeting>()
 </script>
 
 <template>

@@ -23,7 +23,7 @@ export function buildWebSocUrl(): URL {
   const params: WebSocParams = {
     year: quarter.year,
     quarter: quarter.quarter,
-    sectionType: 'Lec',
+    sectionType: 'ANY',
   }
 
   const searchParams = new URLSearchParams(params as Record<string, string>)

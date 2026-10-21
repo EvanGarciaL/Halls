@@ -6,7 +6,7 @@
  * which means tests can mock the date and the app can re-compute it.
  */
 
-type Season = 'Spring' | 'Summer' | 'Fall' | 'Winter'
+export type Season = 'Fall' | 'Winter' | 'Spring' | 'Summer1' | 'Summer10wk' | 'Summer2'
 
 export interface Quarter {
   year: string
@@ -15,8 +15,8 @@ export interface Quarter {
 
 const SEASON_BY_MONTH: readonly Season[] = [
   'Winter', 'Winter', 'Spring', // Jan, Feb, Mar
-  'Spring', 'Spring', 'Summer', // Apr, May, Jun
-  'Summer', 'Summer', 'Fall',   // Jul, Aug, Sep
+  'Spring', 'Spring', 'Summer1', // Apr, May, Jun
+  'Summer1', 'Summer1', 'Fall',   // Jul, Aug, Sep
   'Fall',   'Fall',   'Winter', // Oct, Nov, Dec
 ]
 
@@ -28,8 +28,10 @@ const SEASON_BY_MONTH: readonly Season[] = [
  */
 export function getCurrentQuarter(): Quarter {
   const now = new Date()
+  const season = SEASON_BY_MONTH[now.getMonth()] ?? 'Fall'
   return {
     year: String(now.getFullYear()),
-    quarter: SEASON_BY_MONTH[now.getMonth()],
+    quarter: season,
   }
 }
+

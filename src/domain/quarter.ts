@@ -9,7 +9,7 @@ export function getCurrentQuarter(currentDate : Date, quarterArray : Quarter[]) 
 }
 
 export function getAvailableSummerQuarters(currentDate: Date, quarterArray: Quarter[]) {
-  let summerQtrs = {
+  const summerQtrs = {
     Summer1 : false,
     Summer10wk : false,
     Summer2 : false,
@@ -17,7 +17,9 @@ export function getAvailableSummerQuarters(currentDate: Date, quarterArray: Quar
 
   for (const q of quarterArray) {
     if (q.instructionStart <= currentDate && currentDate <= q.instructionEnd) {
-      summerQtrs[q.quarter as SummerQuarterName]
+      summerQtrs[q.quarter as SummerQuarterName] = true
     }
   }
+
+  return summerQtrs
 }

@@ -1,5 +1,5 @@
 import type { ClassMeeting } from './models'
-import type { WebSocResponse } from '../types/generated/anteater-api-types'
+import type { WebSocResponse } from '../services/websoc-client'
 import { TimeOfDay } from './time'
 import { parseDays } from './day-parser'
 
@@ -23,9 +23,6 @@ type ApiMeeting = ApiSection['meetings'][number]
  * - Meetings where the time is TBA
  * - Online-only meetings ("ON LINE")
  * - Meetings with no assigned building ("TBA ")
- *
- * Renamed from `locations()` — that name didn't describe what the function
- * actually does.
  */
 export function parseScheduleResponse(response: WebSocResponse): ClassMeeting[] {
   const classes: ClassMeeting[] = []
@@ -41,6 +38,8 @@ export function parseScheduleResponse(response: WebSocResponse): ClassMeeting[] 
               courseId: course.courseId,
               courseTitle: course.courseTitle,
               sectionCode: section.sectionCode,
+              sectionType: section.sectionType,
+              instructors: section.instructors,
             })
 
             if (parsed !== null) {
@@ -62,14 +61,13 @@ interface MeetingContext {
   courseId: string
   courseTitle: string
   sectionCode: string
+  sectionType: string
+  instructors: string[]
 }
 
 /**
  * Try to convert a single API meeting into a ClassMeeting.
  * Returns null if the meeting should be excluded (TBA time, online, etc.).
- *
- * Extracting this into its own function keeps the main loop clean and
- * makes the filtering criteria easy to find and modify.
  */
 function tryParseMeeting(
   meeting: ApiMeeting,
@@ -77,20 +75,27 @@ function tryParseMeeting(
 ): ClassMeeting | null {
   // Skip meetings with no scheduled time or physical location
   if (meeting.timeIsTBA) return null
-  if (meeting.bldg[0] === 'ON LINE') return null
-  if (meeting.bldg[0] === 'TBA ') return null
+
+  const rawBldg = meeting.bldg?.[0]
+  if (!rawBldg) return null
+  const cleanBldg = rawBldg.trim()
+  if (cleanBldg === 'ON LINE' || cleanBldg === 'TBA' || cleanBldg === '') return null
 
   const startTime = new TimeOfDay(meeting.startTime.hour, meeting.startTime.minute)
   const endTime = new TimeOfDay(meeting.endTime.hour, meeting.endTime.minute)
 
   return {
-    key: `${ctx.sectionCode}-${meeting.days}-${meeting.startTime.hour}-${meeting.endTime.hour}`,
+    key: `${ctx.sectionCode}-${meeting.days}-${meeting.startTime.hour}:${meeting.startTime.minute}-${meeting.endTime.hour}:${meeting.endTime.minute}`,
     school: ctx.schoolName,
     department: ctx.deptName,
     course: `${ctx.courseId} - ${ctx.courseTitle}`,
-    building: meeting.bldg[0],
+    building: cleanBldg,
     days: parseDays(meeting.days),
     startTime,
     endTime,
+    sectionType: ctx.sectionType,
+    sectionCode: ctx.sectionCode,
+    instructors: ctx.instructors,
   }
 }
+

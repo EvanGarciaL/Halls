@@ -29,15 +29,27 @@ export class TimeOfDay {
   }
 
   /**
-   * Numeric representation for comparison.
-   * e.g. 9:05 → 905, 13:00 → 1300.
-   *
-   * This lets you write `start.valueOf() <= now.valueOf()` and get
-   * correct chronological ordering.
+   * Total minutes from 00:00. Useful for calculating intervals,
+   * timeline positions, and durations.
+   */
+  toMinutes(): number {
+    return this.hour * 60 + this.minute
+  }
+
+  /**
+   * Instance method to format as 12-hour AM/PM string.
+   */
+  formatAMPM(): string {
+    return TimeOfDay.toAMPM(this.hour, this.minute)
+  }
+
+  /**
+   * Numeric representation for comparison (e.g. 9:05 -> 905).
    */
   valueOf(): number {
     return this.hour * 100 + this.minute
   }
+
 
   /**
    * Format as 12-hour AM/PM string.

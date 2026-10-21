@@ -25,5 +25,29 @@ export interface ClassMeeting {
   days: Set<Day>
   startTime: TimeOfDay
   endTime: TimeOfDay
+  /** Section type (e.g. "Lec", "Dis", "Lab", "Sem", etc.) */
+  sectionType: string
+  sectionCode?: string
+  instructors?: string[]
 }
+
+/** Status of a building/room for a specific day at the query time. */
+export interface DayStatus {
+  day: Day
+  isInSession: boolean
+  meeting?: ClassMeeting
+  freeStart?: TimeOfDay
+  freeEnd?: TimeOfDay
+}
+
+/** Grouped representation of a hall (building + room) and its meetings. */
+export interface BuildingHall {
+  building: string
+  meetings: ClassMeeting[]
+  dayStatuses: DayStatus[]
+  isFreeOnAnyDay: boolean
+  isInSessionOnAnyDay: boolean
+  currentMeetings: ClassMeeting[]
+}
+
 
